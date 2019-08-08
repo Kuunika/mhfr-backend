@@ -1,6 +1,7 @@
-import {Column, PrimaryGeneratedColumn, Entity, CreateDateColumn, UpdateDateColumn, ManyToOne, ManyToMany } from 'typeorm';
+import {Column, PrimaryGeneratedColumn, Entity, CreateDateColumn, UpdateDateColumn, ManyToOne, ManyToMany, OneToMany } from 'typeorm';
 import { Service_Type } from './service_types.entity';
 import { Facilities } from './facilities.entity';
+import { Facility_Services } from './facility_services.entity';
 
 @Entity()
 export class Services {
@@ -16,8 +17,8 @@ export class Services {
     @ManyToOne(type => Service_Type, service_type => service_type.service)
     service_type: Service_Type;
 
-    @ManyToMany(type => Facilities, facilities => facilities.services)
-    facilities: Facilities[];
+    @OneToMany(type => Facility_Services, facility_services => facility_services.services)
+    facility_services: Facility_Services[];
 
     @CreateDateColumn({type: 'timestamp'})
     created_at: Date;
