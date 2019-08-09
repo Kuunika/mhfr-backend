@@ -1,5 +1,5 @@
-import { Facilities } from "./facilities.entity";
-import { OneToOne, CreateDateColumn, UpdateDateColumn, PrimaryGeneratedColumn, Column, Entity } from "typeorm";
+import { Facilities } from './facilities.entity';
+import { OneToOne, CreateDateColumn, UpdateDateColumn, PrimaryGeneratedColumn, Column, Entity, JoinColumn } from 'typeorm';
 
 @Entity()
 export class Addresses {
@@ -13,11 +13,12 @@ export class Addresses {
     postal_address: string;
 
     @OneToOne(type => Facilities)
+    @JoinColumn()
     facility: Facilities;
 
-    @CreateDateColumn({type: "timestamp"})
+    @CreateDateColumn({type: 'timestamp'})
     created_at: Date;
 
-    @UpdateDateColumn({type: "timestamp"})
+    @UpdateDateColumn({type: 'timestamp'})
     updated_at: Date;
 }

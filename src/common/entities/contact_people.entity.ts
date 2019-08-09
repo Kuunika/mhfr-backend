@@ -1,8 +1,8 @@
-import {Column, PrimaryGeneratedColumn, Entity, CreateDateColumn, UpdateDateColumn, ManyToOne, OneToOne } from 'typeorm';
+import {Column, PrimaryGeneratedColumn, Entity, CreateDateColumn, UpdateDateColumn, ManyToOne, OneToOne, JoinColumn } from 'typeorm';
 import {Facilities} from './facilities.entity';
 
 @Entity()
-export class Contact_People{
+export class Contact_People {
     @PrimaryGeneratedColumn()
     id: number;
 
@@ -16,11 +16,12 @@ export class Contact_People{
     contact_person_email: string;
 
     @OneToOne(type => Facilities)
+    @JoinColumn()
     facility: Facilities;
 
-    @CreateDateColumn({type: "timestamp"})
+    @CreateDateColumn({type: 'timestamp'})
     created_at: Date;
 
-    @UpdateDateColumn({type: "timestamp"})
+    @UpdateDateColumn({type: 'timestamp'})
     updated_at: Date;
 }

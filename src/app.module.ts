@@ -15,7 +15,10 @@ require( 'dotenv' ).config();
     password: process.env.PASSWORD,
     database: process.env.DATABASE,
     entities: [__dirname + '/**/*.entity{.ts,.js}'],
-    synchronize: true,
+    synchronize: false,
+    debug: false,
+    dropSchema: false,
+
 }), FacilitiesModule, CustomLoggerModule],
   controllers: [AppController],
   providers: [AppService],

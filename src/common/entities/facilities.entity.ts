@@ -12,7 +12,7 @@ import { Facility_Services } from './facility_services.entity';
 export class Facilities{
 
     @PrimaryGeneratedColumn()
-    id: number;
+    facility_id: number;
 
     @Column()
     facility_name: string;

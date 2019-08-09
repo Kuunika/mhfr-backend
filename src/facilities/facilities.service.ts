@@ -10,7 +10,7 @@ export class FacilitiesService {
     constructor(@InjectRepository(Facilities) private readonly facilitiesRepository: Repository<Facilities>) {}
 
     async getAllFacilities(): Promise<Facilities[]> {
-        return await this.facilitiesRepository.find();
+        return await this.facilitiesRepository.find({relations: ['district', 'facility_type', 'facility_operational_status', 'facility_owner']});
     }
 
     async getFacility(id: number): Promise<Facilities> {
