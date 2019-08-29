@@ -15,8 +15,7 @@ export class Geolocations {
     @Column({type: 'decimal'})
     latitude: number;
 
-    @OneToOne(type => Facilities)
-    @JoinColumn()
+    @OneToOne(type => Facilities, facility => facility.address)
     facility: Facilities;
 
     @CreateDateColumn({type: 'timestamp'})

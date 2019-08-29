@@ -1,4 +1,4 @@
-export class FacilitiesDashboardDto {
+export class DashboardDto {
     totalFacilities: number;
     districtHospitals: number;
     healthCenters: number;

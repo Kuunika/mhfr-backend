@@ -4,6 +4,10 @@ import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { FacilitiesModule } from './facilities/facilities.module';
 import { CustomLoggerModule } from './custom-logger/custom-logger.module';
+import { DashboardsModule } from './dashboards/dashboards.module';
+import { FacilityBasicDetailsModule } from './facility-basic-details/facility-basic-details.module';
+import { FacilityBasicDetailsMetaDataModule } from './facility-basic-details-meta-data/facility-basic-details-meta-data.module';
+import { FacilityContactCreateService } from './facility-contact/facility-contact-create/facility-contact-create.service';
 require( 'dotenv' ).config();
 
 @Module({
@@ -18,9 +22,8 @@ require( 'dotenv' ).config();
     synchronize: false,
     debug: false,
     dropSchema: false,
-
-}), FacilitiesModule, CustomLoggerModule],
+}), FacilitiesModule, CustomLoggerModule, DashboardsModule, FacilityBasicDetailsModule, FacilityBasicDetailsMetaDataModule],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, FacilityContactCreateService],
 })
 export class AppModule {}

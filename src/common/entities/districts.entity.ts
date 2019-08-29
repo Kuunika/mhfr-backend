@@ -8,7 +8,10 @@ export class Districts {
     id: number;
 
     @Column()
-    distric_name: string;
+    district_name: string;
+
+    @Column()
+    district_code: string;
 
     @ManyToOne(type => Zones, zones => zones.district)
     @JoinColumn()

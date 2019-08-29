@@ -1,4 +1,4 @@
-import {ManyToOne, Column, PrimaryGeneratedColumn, Entity, CreateDateColumn, UpdateDateColumn, ManyToMany, JoinTable, OneToMany} from 'typeorm';
+import {ManyToOne, Column, PrimaryGeneratedColumn, Entity, CreateDateColumn, UpdateDateColumn, ManyToMany, JoinTable, OneToMany, OneToOne, JoinColumn} from 'typeorm';
 import {Facility_Types} from './facility_types.entity';
 import { Owners } from './owners.entity';
 import {Operational_Status} from './operational_status.entity';
@@ -7,6 +7,10 @@ import { Districts } from './districts.entity';
 import { Facility_Utilities } from './facility_utilities.entity';
 import { Facility_Resources } from './facility_resources.entity';
 import { Facility_Services } from './facility_services.entity';
+import { Contact_People } from './contact_people.entity';
+import { Locations} from './locations.entity';
+import { Addresses } from './addresses.entity';
+import { Geolocations } from './geolocations.entity';
 
 @Entity()
 export class Facilities{
@@ -53,6 +57,22 @@ export class Facilities{
     @OneToMany(type => Facility_Services, facility_services => facility_services.facility)
     facility_services: Facility_Services[];
 
+    @OneToOne(type => Locations, locations => locations.facility, {cascade: true})
+    @JoinColumn()
+    location: Locations;
+
+    @OneToOne(type => Geolocations, geolocations => geolocations.facility, {cascade: true})
+    @JoinColumn()
+    geolocation: Geolocations;
+
+    @OneToOne(type => Contact_People, contact_people => contact_people.facility, {cascade: true})
+    @JoinColumn()
+    contact_people: Contact_People;
+
+    @OneToOne(type => Addresses, addesses => addesses.facility, {cascade: true})
+    @JoinColumn()
+    address: Addresses;
+
     @CreateDateColumn({type: "timestamp"})
     created_at: Date;
 
@@ -61,5 +81,6 @@ export class Facilities{
 
     @UpdateDateColumn({type: "timestamp"})
     details_updated_at: Date;
+    
 
 }

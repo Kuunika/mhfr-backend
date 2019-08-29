@@ -11,9 +11,8 @@ export class Addresses {
 
     @Column()
     postal_address: string;
-
-    @OneToOne(type => Facilities)
-    @JoinColumn()
+    
+    @OneToOne(type => Facilities, facility => facility.address)
     facility: Facilities;
 
     @CreateDateColumn({type: 'timestamp'})

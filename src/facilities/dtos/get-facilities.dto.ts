@@ -1,4 +1,4 @@
-export class FrontEndRetrieveAllFacilitiesDto {
+export interface GetFacilitiesDto {
     id: number;
     code: string;
     name: string;

@@ -7,7 +7,7 @@ const facilitiesDtoSchema = Joi.object().keys({
     "commonName": Joi.string().required(),
     "ownership": Joi.string().required(),
     "type": Joi.string().required(),
-    "status": Joi.string().valid(['Functional', 'Non Functional']).required(),
+    "status": Joi.string().valid(['functional', 'closed', 'closedTemp']).required(),
     "district": Joi.string().required(),
     "dateOpened": Joi.date(),
 });

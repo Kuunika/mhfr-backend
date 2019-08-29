@@ -15,8 +15,7 @@ export class Contact_People {
     @Column()
     contact_person_email: string;
 
-    @OneToOne(type => Facilities)
-    @JoinColumn()
+    @OneToOne(type => Facilities, facility => facility.address)
     facility: Facilities;
 
     @CreateDateColumn({type: 'timestamp'})
