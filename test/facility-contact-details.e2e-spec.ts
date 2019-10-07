@@ -22,7 +22,7 @@ describe('Facilities Basic Details Controller (e2e)', () => {
   describe('/GET', () => {
       it('/facilities/{facility-code}/contacts should return a facility', () => {
           return request(app.getHttpServer())
-          .get('/facilities/sesd/contacts')
+          .get('/facilities/SA090092/contacts')
           .expect(200)
           .responseType('FacilityContactDto');
       });
@@ -31,7 +31,7 @@ describe('Facilities Basic Details Controller (e2e)', () => {
   describe('/POST', () => {
     it('/facilities/{facility-code}/contacts should create new facility', () => {
         return request(app.getHttpServer())
-        .post('/facilities/sesd/contacts')
+        .post('/facilities/SA090092/contacts')
         .send({
             "contactPerson":       "Brett Onions",
             "contactEmail":        "brettonions@gmail.com",
@@ -44,7 +44,9 @@ describe('Facilities Basic Details Controller (e2e)', () => {
             "postalAddress":       "P.O. Box 7589 Blantyre"
         })
         .expect(201)
-        .responseType('SuccessCreatedFacilityContactDto');
+        .responseType('SuccessCreatedFacilityContactDto').catch((error) => {
+          console.log(error);
+        });
     });
   });
 

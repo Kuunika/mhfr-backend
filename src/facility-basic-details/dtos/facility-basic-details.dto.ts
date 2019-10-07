@@ -7,6 +7,7 @@ export interface FacilityBasicDetailsDto {
     type: string;
     status: string;
     district: string;
+    lastUpdated: Date;
     dateOpened: Date;
     codeMap: any[];
 }

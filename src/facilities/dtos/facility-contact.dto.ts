@@ -1,7 +1,7 @@
 export interface FacilityContactDto {
     summary: {
         district: string;
-        lastUpdated: string;
+        lastUpdated: Date;
         operationalStatus: string;
         oldMOHCode: string;
         name: string;

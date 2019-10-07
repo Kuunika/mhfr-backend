@@ -6,6 +6,8 @@ export function createLicenseStatusObject(licenseStatusObject) {
     };
 
     licenseStatusObject.forEach(facilityReg => {
+
+        //TODO: There is an issue with this data.
         switch (facilityReg.regulatory_status) {
             case 'Registered':
                 licenseStatus.registered += parseInt(facilityReg.number_of_facilities, 10);
@@ -38,14 +40,18 @@ export function  createOperationalStatusObject(operationStatusObject) {
     };
 
     operationStatusObject.forEach(status => {
+        console.log(status);
         switch (status.operationalStatus) {
-            case 'functional':
+            case 'Functional':
                 operationalStatus.functional = parseInt(status.number_of_facilities, 10);
                 break;
-            case 'closedTemp':
+            case 'Non-functional':
+                operationalStatus.closedTemp = parseInt(status.number_of_facilities, 10);
+                break;
+            case 'ClosedTemp':
                 operationalStatus.closedTemp =  parseInt(status.number_of_facilities, 10);
                 break;
-            case 'closed':
+            case 'Closed':
                 operationalStatus.closed =  parseInt(status.number_of_facilities, 10);
                 break;
             default:
@@ -66,22 +72,21 @@ export function createFacilityTypesObject(facilityTypesObject) {
 
     facilityTypesObject.forEach(facilityType => {
         switch (facilityType.type_of_facility) {
-            case 'District Hospitals':
+            case 'District Hospital':
                 facilityTypes.districtHospitals = parseInt(facilityType.number_of_facilities, 10);
                 break;
-            case 'Health Centers':
+            case 'Health Centre':
                 facilityTypes.healthCenters =  parseInt(facilityType.number_of_facilities, 10);
                 break;
             case 'Dispensary':
                 facilityTypes.dispensaries =  parseInt(facilityType.number_of_facilities, 10);
                 break;
-            case 'Health Posts':
+            case 'Health Post':
                 facilityTypes.healthPosts =  parseInt(facilityType.number_of_facilities, 10);
                 break;
             default:
                 break;
         }
     });
-
     return facilityTypes;
 }

@@ -7,7 +7,6 @@ import { CustomLoggerModule } from './custom-logger/custom-logger.module';
 import { DashboardsModule } from './dashboards/dashboards.module';
 import { FacilityBasicDetailsModule } from './facility-basic-details/facility-basic-details.module';
 import { FacilityBasicDetailsMetaDataModule } from './facility-basic-details-meta-data/facility-basic-details-meta-data.module';
-import { FacilityContactCreateService } from './facility-contact/facility-contact-create/facility-contact-create.service';
 require( 'dotenv' ).config();
 
 @Module({
@@ -24,6 +23,6 @@ require( 'dotenv' ).config();
     dropSchema: false,
 }), FacilitiesModule, CustomLoggerModule, DashboardsModule, FacilityBasicDetailsModule, FacilityBasicDetailsMetaDataModule],
   controllers: [AppController],
-  providers: [AppService, FacilityContactCreateService],
+  providers: [AppService],
 })
 export class AppModule {}

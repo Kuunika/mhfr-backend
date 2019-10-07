@@ -1,11 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import * as request from 'supertest';
 import { AppModule } from '../src/app.module';
-import { FacilityBasicDetailsDto } from 'src/facility-basic-details/dtos/facility-basic-details.dto';
 import * as Joi from '@hapi/joi';
-import * as facilityBasicDetailsSchema from './hapijoi-test-schemas/facilities-basic-details-schemas/facilities-basic-details-get.schema';
+import * as facilitiesResourcesDtoSchema from './hapijoi-test-schemas/facilities-resource-schemas/facilities-resource-get.schema';
 
-describe('Facilities Basic Details Controller (e2e)', () => {
+describe('Facilities Resources Controller (e2e)', () => {
   let app;
 
   beforeEach(async () => {
@@ -21,24 +20,23 @@ describe('Facilities Basic Details Controller (e2e)', () => {
     await app.close();
   });
 
-  
-  describe('/Get', () => {
-      it('facilities-basic-details /GET', () => {
+  describe('/GET', () => {
+      it('Getting all of the resources from a specific location', () => {
           return request(app.getHttpServer())
-          .get('/facility-basic-details/LL040091')
+          .get('/facilities/SA090092/resources')
           .expect(200)
-          .responseType('FacilityBasicDetailsDto');
+          .responseType('FacilitiesResourcesDto');
       });
 
-      it('facilities-basic-details /GET', () => {
+      it('Getting all of the resources from a specific location', () => {
         return request(app.getHttpServer())
-        .get('/facility-basic-details/LL040091')
+        .get('/facilities/SA090092/resources')
         .expect((res) => {
-              const errorMessage = Joi.validate(res.body, facilityBasicDetailsSchema.default).error;
+              const errorMessage = Joi.validate(res.body, facilitiesResourcesDtoSchema.default).error;
               // if(errorMessage){ console.log(errorMessage); }
               expect(errorMessage).toBeNull();
+
       });
     });
   });
-
 });

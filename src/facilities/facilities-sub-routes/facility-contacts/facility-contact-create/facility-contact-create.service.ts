@@ -1,15 +1,15 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Facilities } from '../../../common/entities/facilities.entity';
+import { Facilities } from '../../../../common/entities/facilities.entity';
 import { Repository } from 'typeorm';
-import * as Schema from '../../../common/validation_schemas/create-facility-contact-details.schema';
+import * as Schema from '../../../../common/validation_schemas/create-facility-contact-details.schema';
 import * as Joi from '@hapi/joi';
-import { CreateFacilityContactDto } from '../../../facilities/dtos/create-facility-contact.dto';
-import { SuccessCreatedFacilityContactDto } from '../../../facilities/dtos/success-created-facility-contact.dto';
-import { Locations } from '../../../common/entities/locations.entity';
-import { Geolocations } from '../../../common/entities/geolocations.entity';
-import { Contact_People } from '../../../common/entities/contact_people.entity';
-import { Addresses } from '../../../common/entities/addresses.entity';
+import { CreateFacilityContactDto } from '../../../../facilities/dtos/create-facility-contact.dto';
+import { SuccessCreatedFacilityContactDto } from '../../../../facilities/dtos/success-created-facility-contact.dto';
+import { Locations } from '../../../../common/entities/locations.entity';
+import { Geolocations } from '../../../../common/entities/geolocations.entity';
+import { Contact_People } from '../../../../common/entities/contact_people.entity';
+import { Addresses } from '../../../../common/entities/addresses.entity';
 
 @Injectable()
 export class FacilityContactCreateService {
@@ -36,7 +36,8 @@ export class FacilityContactCreateService {
             await this.facilityRepository.save(facility);
         } catch (error) {
             throw new HttpException({
-                error: 'Something went wrong internally, Please try again later',
+                message: 'Something went wrong internally, Please try again later',
+                error,
             }, HttpStatus.INTERNAL_SERVER_ERROR);
             return null;
         }

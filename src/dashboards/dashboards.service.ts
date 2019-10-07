@@ -2,61 +2,94 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { DashboardDto } from './dtos/dashboard.dto';
-import { FacilityTypeDashboardAggregate } from '../common/entities/facility_type_dashboard_aggregate_view.entity';
 import { Facilities } from '../common/entities/facilities.entity';
-import * as convert from '../common/helpers/convert-to-json.helper';
-import * as dtoHelper from './helpers/create-dashboard-dto.helper';
-import { objectMapping } from '../common/helpers/object-mapping.helper';
+import { DashboardView } from '../common/entities/dashboard.view.entity';
 
 @Injectable()
 export class DashboardsService {
-    constructor(@InjectRepository(Facilities) private readonly facilitiesRepository: Repository<Facilities>) {}
+    constructor(@InjectRepository(Facilities) private readonly facilitiesRepository: Repository<Facilities>,
+                @InjectRepository(DashboardView) private readonly dashboardViewRepository: Repository<DashboardView>) {}
 
-    async getDashboardReport(): Promise<DashboardDto> {
-        const dashBoardDto = new DashboardDto();
-        dashBoardDto.totalFacilities = await this.facilitiesRepository.count();
+    async getDashboardReport(districtCodes?: string[]): Promise<DashboardDto> {
+        const dashboardView = await this.dashboardViewRepository.find();
 
-        const facilityTypes = await this.createFacilityTypesView();
-        const facilitiesRegStatuses = await this.createFacilitiesRegStatusView();
-        const facilityOperationalStatuses = await this.createFacilityOperationalStatus();
+        const validatedDistrictCodes = this.validateDistrictCodes(districtCodes);
 
-        const facilityTypesObject = dtoHelper.createFacilityTypesObject(facilityTypes);
-        dashBoardDto.dispensaries = facilityTypesObject.dispensaries;
-        dashBoardDto.districtHospitals = facilityTypesObject.districtHospitals;
-        dashBoardDto.healthCenters = facilityTypesObject.healthCenters;
-        dashBoardDto.healthPosts = facilityTypesObject.healthPosts;
-
-        dashBoardDto.licenseStatus = dtoHelper.createLicenseStatusObject(facilitiesRegStatuses);
-        dashBoardDto.operationalStatus = dtoHelper.createOperationalStatusObject(facilityOperationalStatuses);
-        return dashBoardDto;
+        const validSetOfDistrictCodes: boolean = districtCodes !== undefined && validatedDistrictCodes.length > 0;
+        return validSetOfDistrictCodes ? this.filterDashboard(validatedDistrictCodes, dashboardView) : this.createDashboardDto(dashboardView);
     }
 
-    private async createFacilityTypesView() {
-        const facilityType = await this.facilitiesRepository.createQueryBuilder('facilities')
-        .innerJoinAndSelect('facilities.facility_type', 'facility_types')
-        .select(['facility_types.facility_type as type_of_facility', 'COUNT(facilities.facility_id) as number_of_facilities' ])
-        .groupBy('facility_types.facility_type')
-        .addGroupBy('facilities.facility_type')
-        .getRawMany();
-        return convert.convertToJSON(facilityType);
+    private validateDistrictCodes(districtCodes: string[]): string[] {
+        const validDistrictCodes = ['MC', 'DA', 'DE', 'LL', 'KB', 'CP', 'KU', 'NT', 'SA', 'NK', 'KC', 'NT', 'MU',
+        'RU', 'KA', 'MZ', 'BK', 'LK', 'MC', 'MG', 'MU', 'PH', 'ZA', 'BT', 'QE', 'CR', 'CK', 'MW', 'NE', 'NS', 'TH'];
+        return districtCodes ? districtCodes.map((code) => code.toUpperCase()).filter((code) => validDistrictCodes.includes(code)) : [];
     }
 
-    private async createFacilitiesRegStatusView()  {
-        const facilityRepository = await this.facilitiesRepository.createQueryBuilder('facilities')
-        .innerJoinAndSelect('facilities.facility_regulatory_status', 'regulatory_status')
-        .select(['regulatory_status.facility_regulatory_status as regulatory_status', 'COUNT(facilities.facility_id) as number_of_facilities'])
-        .groupBy('regulatory_status.facility_regulatory_status')
-        .getRawMany();
-        return convert.convertToJSON(facilityRepository);
+    private filterDashboard(districtCodes: string[], dashboardView: DashboardView[]): DashboardDto {
+        return this.createDashboardDto(dashboardView.filter((facility) => districtCodes.includes(facility.district_code)));
     }
 
-    private async createFacilityOperationalStatus() {
-        const facilityOperational = await this.facilitiesRepository.createQueryBuilder('facilities')
-        .innerJoinAndSelect('facilities.facility_operational_status', 'operational_status')
-        .select(['operational_status.facility_operational_status as operationalStatus', 'COUNT(facilities.facility_id) as number_of_facilities'])
-        .groupBy('operational_status.facility_operational_status')
-        .getRawMany();
-        return convert.convertToJSON(facilityOperational);
-    }
+    // TODO: Need to Refactor
+    private createDashboardDto(dashboardView: DashboardView[]): DashboardDto {
+        const districtHospitals: number = dashboardView
+                                            .map((facility): number => Number(facility.district_hospital))
+                                            .reduce((total, current) => total += current);
 
+        const healthCenters: number = dashboardView
+                                            .map((facility): number => Number(facility.health_centre))
+                                            .reduce((total, current) => total += current);
+
+        const dispensaries: number  = dashboardView
+                                            .map((facility): number => Number(facility.dispensary))
+                                            .reduce((total, current) => total += current);
+
+        const healthPosts: number   = dashboardView
+                                            .map((facility): number => Number(facility.health_post))
+                                            .reduce((total, current) => total += current);
+
+        const registered: number = dashboardView
+                                            .map((facility): number => Number(facility.registered))
+                                            .reduce((total, current) => total += current);
+
+        const pending: number = dashboardView
+                                            .map((facility): number => Number(facility.pending))
+                                            .reduce((total, current) => total += current);
+
+        const notRegistered: number = dashboardView
+                                            .map((facility): number => Number(facility.not_registered))
+                                            .reduce((total, current) => total += current);
+
+        const functional: number = dashboardView
+                                            .map((facility): number => Number(facility.functional))
+                                            .reduce((total, current) => total += current);
+
+        const closedTemp: number = dashboardView
+                                            .map((facility): number => Number(facility.closed_temporary))
+                                            .reduce((total, current) => total += current);
+
+        const closed: number = dashboardView
+                                            .map((facility): number => Number(facility.closed))
+                                            .reduce((total, current) => total += current);
+
+        const totalFacilities: number = dispensaries + healthPosts + districtHospitals + healthCenters;
+
+
+        return {
+            totalFacilities,
+            districtHospitals,
+            healthCenters,
+            dispensaries,
+            healthPosts,
+            licenseStatus: {
+                registered,
+                pending,
+                notRegistered,
+            },
+            operationalStatus: {
+                functional,
+                closedTemp,
+                closed,
+            },
+        };
+    }
 }

@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common';
 import * as _ from 'lodash';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Not } from 'typeorm';
-import { Districts } from '../../common/entities/districts.entity';
-import { Facilities } from '../../common/entities/facilities.entity';
+import { Districts } from '../common/entities/districts.entity';
+import { Facilities } from '../common/entities/facilities.entity';
 
 @Injectable()
 export class FacilityCodeService {

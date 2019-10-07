@@ -1,7 +1,7 @@
 import { Controller, Get, Param, Post, Body } from '@nestjs/common';
-import { FacilityContactDto } from '../dtos/facility-contact.dto';
-import { CreateFacilityContactDto } from '../dtos/create-facility-contact.dto';
-import { SuccessCreatedFacilityContactDto} from '../dtos/success-created-facility-contact.dto';
+import { FacilityContactDto } from '../../dtos/facility-contact.dto';
+import { CreateFacilityContactDto } from '../../dtos/create-facility-contact.dto';
+import { SuccessCreatedFacilityContactDto} from '../../dtos/success-created-facility-contact.dto';
 import { FacilityContactsService } from './facility-contacts.service';
 
 @Controller('facilities/:facility_code/contacts')

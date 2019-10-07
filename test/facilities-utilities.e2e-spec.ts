@@ -2,10 +2,9 @@ import { Test, TestingModule } from '@nestjs/testing';
 import * as request from 'supertest';
 import { AppModule } from '../src/app.module';
 import * as Joi from '@hapi/joi';
-import * as getDashboardDtoSchema from './hapijoi-test-schemas/dashboard-test-schemas/dashboard.schema';
+import * as facilitiesUtilitiesGet from './hapijoi-test-schemas/facility-utilities-schemas/facilities-utilities-get.schema';
 
-
-describe('DashboardController (e2e)', () => {
+describe('FacilitiesUtilitiesController (e2e)', () => {
   let app;
 
   beforeEach(async () => {
@@ -21,23 +20,22 @@ describe('DashboardController (e2e)', () => {
     await app.close();
   });
 
-  describe('Dashboard /GET', () => {
+  describe('Facilities Utilities /GET', () => {
 
-    it('Should return an array of type DashboardDto', () => {
+    it('Should return an array of type GetFacilitiesUtilitiesDto', () => {
         return request(app.getHttpServer())
-        .get('/dashboards')
+        .get('/facilities/CK270193/utilities')
         .expect(200)
-        .responseType('DashboardDto');
+        .responseType('GetFacilitiesUtilitiesDto');
       });
 
     it('Should return data with valid ranges', () => {
         return request(app.getHttpServer())
-        .get('/dashboards')
+        .get('/facilities/CK270193/utilities')
         .expect(200)
-        .expect((res) => {
-              const errorMessage = Joi.validate(res.body, getDashboardDtoSchema.default).error;
-              // if(errorMessage){ console.log(errorMessage); }
-              expect(errorMessage).toBeNull();
+        .expect((response) => {
+            const errorMessage = Joi.validate(response.body, facilitiesUtilitiesGet.default).error;
+            expect(errorMessage).toBeNull();
         });
     });
 

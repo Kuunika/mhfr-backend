@@ -1,7 +1,7 @@
 import { Injectable, NotImplementedException, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Facilities } from '../common/entities/facilities.entity';
-import { Repository, Not } from 'typeorm';
+import { Repository } from 'typeorm';
 import { CreateFacilityDto } from './dtos/create-facility.dto';
 import * as helper from '../common/helpers/null-or-string.helper';
 import { Owners } from '../common/entities/owners.entity';
@@ -10,7 +10,7 @@ import { Districts } from '../common/entities/districts.entity';
 import { Operational_Status } from '../common/entities/operational_status.entity';
 import { Regulatory_Status } from '../common/entities/regulatory_status.entity';
 import { GetFacilitiesDto } from './dtos/get-facilities.dto';
-import { FacilityCodeService } from './facility-code/facility-code.service';
+import { FacilityCodeService } from './facility-code.service';
 import { Facility_Types } from '../common/entities/facility_types.entity';
 
 @Injectable()
@@ -43,8 +43,7 @@ export class FacilitiesService {
 
     async createFacility(createFacilityDto: CreateFacilityDto): Promise<object> {
         const facility =  new Facilities();
-        const {ownerId, districtId, operationalStatusId, registrationStatusId, facilityTypeId} = createFacilityDto;
-        const relations = await this.getRelations(districtId, operationalStatusId, registrationStatusId, ownerId, facilityTypeId);
+        const relations = await this.getRelations(createFacilityDto);
 
         facility.facility_name = createFacilityDto.name;
         facility.facility_date_opened = createFacilityDto.dateOpened;
@@ -62,9 +61,9 @@ export class FacilitiesService {
     }
 
     // TODO: Refactor to clean the parameter.
-    private async getRelations(districtId: number, operationalStatusId: number,
-         registrationStatusId: number, ownerId: number, facilityTypeId: number): 
-    Promise<{ district, operationalStatus, regulatoryStatus, owner, facilityType,}> {
+    private async getRelations({ districtId, operationalStatusId, registrationStatusId, ownerId, facilityTypeId }:
+         { districtId: number; operationalStatusId: number; registrationStatusId: number; ownerId: number; facilityTypeId: number; }): 
+    Promise<{ district, operationalStatus, regulatoryStatus, owner, facilityType, }> {
 
         const district          = await this.districtsRepository.findOne(districtId);
         const operationalStatus = await this.operationalStatus.findOne(operationalStatusId);
@@ -72,11 +71,11 @@ export class FacilitiesService {
         const owner             = await this.ownersRepository.findOne(ownerId);
         const facilityType      = await this.facilityTypeRepository.findOne(facilityTypeId);
 
-        this.validateExists(district, 'District Id');
-        this.validateExists(operationalStatus, 'Operational Status Id');
-        this.validateExists(regulatoryStatus, 'Regulatory Status Id');
-        this.validateExists(owner, 'Owner Id');
-        this.validateExists(facilityType, 'Facility Type Id');
+        this.validateRelationExists(district, 'District');
+        this.validateRelationExists(operationalStatus, 'Operational Status Id');
+        this.validateRelationExists(regulatoryStatus, 'Regulatory Status Id');
+        this.validateRelationExists(owner, 'Owner Id');
+        this.validateRelationExists(facilityType, 'Facility Type Id');
 
         return {
             district,
@@ -87,10 +86,17 @@ export class FacilitiesService {
         };
     }
 
-    private validateExists(databaseReturn: object, databaseItemName: string){
-        if (databaseReturn){
-            return databaseReturn;
-        }
-        throw new HttpException(`${databaseItemName} does not exist`, HttpStatus.UNPROCESSABLE_ENTITY);
+    // TODO: Refactor into Another 
+    private validateRelationExists(databaseReturn: object, databaseItemName: string) {
+        if (databaseReturn) { return databaseReturn; }
+        throw new HttpException({
+                message: `The ID you specified for the ${databaseItemName} does not exist`,
+                errorBag: [
+                    {
+                        field: `${databaseItemName}Id`,
+                        message: `The ID you specified for the ${databaseItemName} does not exist`,
+                    },
+                ]
+        }, HttpStatus.UNPROCESSABLE_ENTITY);
     }
 }

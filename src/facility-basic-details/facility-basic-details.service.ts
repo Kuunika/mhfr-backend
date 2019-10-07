@@ -10,16 +10,14 @@ export class FacilityBasicDetailsService {
     constructor(@InjectRepository(Facilities) private readonly facilitiesRepository: Repository<Facilities>) {}
 
     async getFacilityBasicDetails(facility_code: string): Promise<FacilityBasicDetailsDto> {
-        console.log(facility_code);
         const facility = await this.facilitiesRepository.findOne({facility_code},
             {relations: ['district', 'facility_type', 'facility_operational_status', 'facility_owner']});
- 
-        console.log(facility);
         if (!facility) { throw new HttpException('Facility Not Found', HttpStatus.NOT_FOUND); }
 
         return {
             commonName: facility.common_name || '',
             code:       facility.facility_code || '',
+            lastUpdated: facility.updated_at,
             dateOpened: facility.facility_date_opened || null,
             ownership:  nullOrString(facility.facility_owner, 'facility_owner'),
             district:   nullOrString(facility.district, 'district_name'),
