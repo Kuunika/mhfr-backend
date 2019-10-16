@@ -11,10 +11,10 @@ export interface Services {
 
 export interface ServiceType {
     name:        string;
-    subservices: Subservices;
+    services: Subservices[];
 }
 
 export interface Subservices {
     name:        string;
-    subservices: string[];
+    subservices: Subservices;
 }

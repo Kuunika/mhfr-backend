@@ -8,7 +8,7 @@ import { FacilityNotFoundException } from '../exceptions/facility-not-found.exce
 export class FacilityValidatorServiceService {
     constructor(@InjectRepository(Facilities) private readonly facilitiesRepository: Repository<Facilities>) {}
 
-    async getFacility(facility_code: string, relations: string[]): Promise<Facilities> {
+    async getFacility(facility_code: string, relations: string[] = []): Promise<Facilities> {
         const facility = await this.facilitiesRepository.findOne({where: {facility_code}, relations});
         if (!facility) {
             throw new FacilityNotFoundException(facility_code);

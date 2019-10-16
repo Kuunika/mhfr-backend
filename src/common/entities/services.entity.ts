@@ -20,6 +20,9 @@ export class Services {
     @OneToMany(type => Facility_Services, facility_services => facility_services.services)
     facility_services: Facility_Services[];
 
+    @Column()
+    service_category_id: number;
+
     @CreateDateColumn({type: 'timestamp'})
     created_at: Date;
 
