@@ -7,6 +7,7 @@ import { CustomLoggerModule } from './custom-logger/custom-logger.module';
 import { DashboardsModule } from './dashboards/dashboards.module';
 import { FacilityBasicDetailsModule } from './facility-basic-details/facility-basic-details.module';
 import { FacilityBasicDetailsMetaDataModule } from './facility-basic-details-meta-data/facility-basic-details-meta-data.module';
+import { DtoIdsValidatorHelper } from './common/helpers/dto-ids-validator-helper';
 require( 'dotenv' ).config();
 
 @Module({
@@ -23,6 +24,6 @@ require( 'dotenv' ).config();
     dropSchema: false,
 }), FacilitiesModule, CustomLoggerModule, DashboardsModule, FacilityBasicDetailsModule, FacilityBasicDetailsMetaDataModule],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, DtoIdsValidatorHelper],
 })
 export class AppModule {}

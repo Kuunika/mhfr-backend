@@ -17,9 +17,6 @@ export class FacilitiesController {
     @Post()
     async createFacility(@Body() createFacilityDto: CreateFacilityDto){
         const validation = Joi.validate(createFacilityDto, createFacilitiesSchema.default);
-
-        console.log(validation);
-
         if(validation.error) {
             throw new HttpException('Bad Request. Please carefully check your request body', HttpStatus.BAD_REQUEST);
             return null;

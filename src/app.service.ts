@@ -6,7 +6,7 @@ export class AppService {
    *
    */
   constructor() {
-    console.log('Hello');
+    //console.log('Hello');
   }
   getHello(): string {
     return 'Hello World!';

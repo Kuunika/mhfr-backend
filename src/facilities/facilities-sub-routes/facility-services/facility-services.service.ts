@@ -1,6 +1,5 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import * as _ from "lodash";
-import * as Joi from '@hapi/joi';
 import * as createFacilityServiceSchema from '../../../common/validation_schemas/create-facility-services.schema';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Facilities } from '../../../common/entities/facilities.entity';
@@ -14,6 +13,8 @@ import { FacilityValidatorServiceService } from '../../facility-validator-servic
 import { Services } from '../../../common/entities/services.entity';
 import { Service_Type } from '../../../common/entities/service_types.entity';
 import { InvalidFacilityServiceCodeStructureException } from '../../../exceptions/invalid-facility-service-code-structure.exception';
+import { JoiDtoValidatorHelper} from '../../../common/helpers/joi-dto-validator-helper';
+import { DtoIdsValidatorHelper, DtoIdsValidatorReturnObject} from '../../../common/helpers/dto-ids-validator-helper';
 
 @Injectable()
 export class FacilityServicesService {
@@ -22,7 +23,9 @@ export class FacilityServicesService {
         @InjectRepository(Services) private readonly servicesRepository: Repository<Services>,
         @InjectRepository(Service_Type) private readonly serviceTypeRepository: Repository<Service_Type>,
         private readonly facilitiesSummaryHelper: FacilitiesSummaryHelper,
-        private readonly facilityValidatorServiceService: FacilityValidatorServiceService) { }
+        private readonly facilityValidatorServiceService: FacilityValidatorServiceService,
+        private readonly joiDtoValidator: JoiDtoValidatorHelper,
+        private readonly dtoIdsValidatorHelper: DtoIdsValidatorHelper) { }
 
     async getFacilityServices(facility_code: string): Promise<GetFacilityServiceDto> {
         const facility = await this.facilityValidatorServiceService.getFacility(facility_code, ['district', 'facility_operational_status']);
@@ -78,58 +81,45 @@ export class FacilityServicesService {
             });
     }
 
-    // TODO: Rename variables, code is getting confusing.
-    // TODO: Create new Field that list all of the already existing FacilityServices
-    // TODO: Create a new exception that is thrown when all of the passed in service ideas already are linked to a facility. 
     async createFacilityService(facility_code: string, createFacilityServiceDto: CreateFacilityServiceDto)
     : Promise<SuccessFacilityServiceCreatedDto> {
-        const validation = Joi.validate(createFacilityServiceDto, createFacilityServiceSchema.default);
 
-        if (validation.error) {
-            throw new InvalidFacilityServiceCodeStructureException();
-            return null;
-        }
+        this.joiDtoValidator.validateDto(createFacilityServiceSchema.default, createFacilityServiceDto,
+            new InvalidFacilityServiceCodeStructureException());
 
         const facility = await this.facilityValidatorServiceService.getFacility(facility_code);
 
         const services = await this.servicesRepository.
-                                find({where: { id: In(createFacilityServiceDto.serviceIds.map((serviceId): number => serviceId)) },
+                                find({where: { id: In(createFacilityServiceDto.serviceIds) },
                                 relations: ['service_type'] });
 
         const facilityServices = await this.facilitiesServiceRepository.find({where: {facility}, relations: ['services']});
 
-        // Identifying duplicates
-        const existingFacilityServices = facilityServices.map(facilityService => facilityService.services.id);
-        const duplicateEntities: number[] = createFacilityServiceDto.serviceIds.filter(serviceId => existingFacilityServices.includes(serviceId));
-
-        // Identifying all of the non-existing services
         const allServicesIds = services.map(service => service.id);
-        const nonExistingEntities: number[] = createFacilityServiceDto.serviceIds.filter(serviceId => !allServicesIds.includes(serviceId));
 
         if (allServicesIds.length === 0) {
-            throw new HttpException('Invalid Facility Services Provided', HttpStatus.BAD_REQUEST);
-            return null;
+            throw new HttpException({
+                message: 'No records of services found, please ensure service records exist before continuing',
+                code: 500,
+            }, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        const newFacilityServices: Facility_Services[] = services
-        .filter(service => !nonExistingEntities.includes(service.id) && !duplicateEntities.includes(service.id))
-        .map((service) => {
+        const {nonExistingEntities, duplicateEntities, validEntitiesFromDto} = await this.dtoIdsValidatorHelper.filterIdsFromDto(
+            createFacilityServiceDto.serviceIds,
+            allServicesIds,
+            facilityServices.map(facilityService => facilityService.services.id),
+            'Failed to create new Facility Services',
+            );
+
+        const newFacilityServices: Facility_Services[] = validEntitiesFromDto
+        .map((serviceId) => {
             const facility_service = new Facility_Services();
             facility_service.facility = facility;
-            facility_service.services = service;
+            facility_service.services = services.find(service => service.id === serviceId);
             return facility_service;
         });
 
-        if(newFacilityServices.length === 0){
-            throw new HttpException({
-                message: 'Failed to create new Facility Services',
-                nonExistingEntities,
-                duplicateEntities,
-            }, HttpStatus.BAD_REQUEST);
-            return null;
-        }
-
-        const insertionQuery = await this.facilitiesServiceRepository.save(newFacilityServices);
+        await this.facilitiesServiceRepository.save(newFacilityServices);
 
         return {
             message: `Successfully Created Facility Services for ${facility.facility_name}`,

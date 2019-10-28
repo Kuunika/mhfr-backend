@@ -1,0 +1,178 @@
+[
+    {
+        "facilityCode":"BT240090",
+        "expectedResult": {
+            "summary": {
+              "commonName": "Waterboard Clinic-Mudi",
+              "district": "Blantyre",
+              "lastUpdated": "Wed Sep 11 2019",
+              "name": "Blantyre Water Board - Walkers",
+              "oldMOHCode": "N/A",
+              "operationalStatus": "Functional"
+            },
+            "resourceTypes": [
+              {
+                "name": "Transport",
+                "resources": [
+                  {
+                    "name": "Motor Vehicle Ambulances",
+                    "value": 0
+                  },
+                  {
+                    "name": "Motor cycles",
+                    "value": 0
+                  },
+                  {
+                    "name": "Bicycles",
+                    "value": 0
+                  },
+                  {
+                    "name": "Motor Bike Ambulances",
+                    "value": 0
+                  },
+                  {
+                    "name": "Vehicles/Cars",
+                    "value": 0
+                  },
+                  {
+                    "name": "Other",
+                    "value": 0
+                  },
+                  {
+                    "name": "Motor Vehicle Ambulances",
+                    "value": 1
+                  },
+                  {
+                    "name": "Motor cycles",
+                    "value": 0
+                  },
+                  {
+                    "name": "Bicycles",
+                    "value": 0
+                  },
+                  {
+                    "name": "Motor Bike Ambulances",
+                    "value": 0
+                  },
+                  {
+                    "name": "Vehicles/Cars",
+                    "value": 0
+                  },
+                  {
+                    "name": "Other",
+                    "value": 0
+                  }
+                ]
+              },
+              {
+                "name": "Beds",
+                "resources": [
+                  {
+                    "name": "Other inpatient beds",
+                    "value": 0
+                  },
+                  {
+                    "name": "Delivery beds",
+                    "value": 0
+                  },
+                  {
+                    "name": "Maternity beds",
+                    "value": 0
+                  },
+                  {
+                    "name": "Total overningt beds",
+                    "value": 0
+                  },
+                  {
+                    "name": "Other inpatient beds",
+                    "value": 0
+                  },
+                  {
+                    "name": "Delivery beds",
+                    "value": 0
+                  },
+                  {
+                    "name": "Maternity beds",
+                    "value": 0
+                  },
+                  {
+                    "name": "Total overningt beds",
+                    "value": 0
+                  }
+                ]
+              },
+              {
+                "name": "Generators",
+                "resources": [
+                  {
+                    "name": "20 watts generators",
+                    "value": 0
+                  },
+                  {
+                    "name": "30 watts generators",
+                    "value": 0
+                  },
+                  {
+                    "name": "40 watts generator",
+                    "value": 0
+                  },
+                  {
+                    "name": "50 watts generator",
+                    "value": 0
+                  },
+                  {
+                    "name": "20 watts generators",
+                    "value": 0
+                  },
+                  {
+                    "name": "50 watts generator",
+                    "value": 0
+                  },
+                  {
+                    "name": "30 watts generators",
+                    "value": 0
+                  },
+                  {
+                    "name": "40 watts generator",
+                    "value": 0
+                  }
+                ]
+              },
+              {
+                "name": "Computers",
+                "resources": [
+                  {
+                    "name": "Laptop",
+                    "value": 0
+                  },
+                  {
+                    "name": "Desktop",
+                    "value": 0
+                  },
+                  {
+                    "name": "Laptop",
+                    "value": 0
+                  },
+                  {
+                    "name": "Desktop",
+                    "value": 0
+                  }
+                ]
+              },
+              {
+                "name": "Housing",
+                "resources": [
+                  {
+                    "name": "Staff houses",
+                    "value": 0
+                  },
+                  {
+                    "name": "Staff houses",
+                    "value": 1
+                  }
+                ]
+              }
+            ]
+          }
+    }
+]

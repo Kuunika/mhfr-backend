@@ -1,0 +1,73 @@
+[
+    {
+        "facilityCode": "MC010001",
+        "expectedResult": {
+            "summary": {
+              "commonName": "Facility Common Name",
+              "district": "Mchinji",
+              "lastUpdated": "Wed Sep 11 2019",
+              "name": "Facility Name",
+              "oldMOHCode": "DHIS2 CODE",
+              "operationalStatus": "Functional"
+            },
+            "services": {
+              "serviceTypes": [
+                {
+                  "name": "Clinical Services",
+                  "services": [
+                    {
+                      "name": " Malaria facility offer diagnosis and malaria treatment",
+                      "subservices": []
+                    },
+                    {
+                      "name": "In patient services (IPD)",
+                      "subservices": []
+                    },
+                    {
+                      "name": "Out patient services (OPD)",
+                      "subservices": []
+                    },
+                    {
+                      "name": "Malaria Diagnosis and Treatment",
+                      "subservices": []
+                    },
+                    {
+                      "name": "MCI-Integrated Mangement of child illiness",
+                      "subservices": []
+                    },
+                    {
+                      "name": "Non-Communicable Diseases",
+                      "subservices": []
+                    },
+                    {
+                      "name": " Surgical services provided",
+                      "subservices": []
+                    },
+                    {
+                      "name": " Blood Transfusion",
+                      "subservices": []
+                    },
+                    {
+                      "name": "HIV and AIDS Treatment",
+                      "subservices": []
+                    },
+                    {
+                      "name": "Sexully Transmitted infection",
+                      "subservices": []
+                    }
+                  ]
+                },
+                {
+                  "name": "Therapeutical Services",
+                  "services": [
+                    {
+                      "name": "Pharmacy",
+                      "subservices": []
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+    }
+]

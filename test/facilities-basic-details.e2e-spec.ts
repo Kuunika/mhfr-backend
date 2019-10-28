@@ -21,7 +21,8 @@ describe('Facilities Basic Details Controller (e2e)', () => {
     await app.close();
   });
 
-  
+  // TODO: When writing GET Test ensure that the data returned is an expected facility data.
+  // TODO: Make the test more data driven.
   describe('/Get', () => {
       it('facilities-basic-details /GET', () => {
           return request(app.getHttpServer())
@@ -35,7 +36,7 @@ describe('Facilities Basic Details Controller (e2e)', () => {
         .get('/facility-basic-details/LL040091')
         .expect((res) => {
               const errorMessage = Joi.validate(res.body, facilityBasicDetailsSchema.default).error;
-              // if(errorMessage){ console.log(errorMessage); }
+              if(errorMessage){ console.log(errorMessage); }
               expect(errorMessage).toBeNull();
       });
     });

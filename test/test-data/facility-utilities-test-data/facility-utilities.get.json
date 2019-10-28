@@ -1,0 +1,48 @@
+[
+    {
+        "facilityCode": "BT240005",
+        "expectedResult": {
+            "summary": {
+                "commonName": "AB",
+                "district": "Blantyre",
+                "lastUpdated": "Wed Sep 11 2019",
+                "name": "AB .",
+                "oldMOHCode": "N/A",
+                "operationalStatus": "Non-functional"
+              },
+              "utilities": {
+                "utilityTypes": [
+                  {
+                    "name": "Energy Proovider",
+                    "utilities": [
+                      "Generator",
+                      "No electricity",
+                      "Solar panels",
+                      "Wired for electricity",
+                      "Connected to ESCOM Grid",
+                      "Near ESCOM Grid",
+                      "National Grid"
+                    ]
+                  },
+                  {
+                    "name": "Water Provider",
+                    "utilities": [
+                      "Public tap/stand pipe",
+                      "Piped into health facility",
+                      "Piped into facility ground",
+                      "Tube well/borehole",
+                      "Tanker truck",
+                      "Rainwater harvesting",
+                      "Protected dug well",
+                      "protected spring",
+                      "Unprotected dug well",
+                      "unprotected spring",
+                      "surface water(Dam/Lake/River/Pond",
+                      "Other"
+                    ]
+                  }
+                ]
+              }
+        }
+    }
+]

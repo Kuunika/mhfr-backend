@@ -3,9 +3,16 @@ import * as request from 'supertest';
 import { AppModule } from '../src/app.module';
 import * as Joi from '@hapi/joi';
 import * as facilitiesUtilitiesGet from './hapijoi-test-schemas/facility-utilities-schemas/facilities-utilities-get.schema';
+import * as _ from 'lodash';
+
 
 describe('FacilitiesUtilitiesController (e2e)', () => {
   let app;
+
+  const testDataJSONFile = require('./test-data/facility-utilities-test-data/facility-utilities.get.json');
+  const facilityUtilitiesTestData = testDataJSONFile.map((testData): any[] => {
+      return [testData['facilityCode'], testData['expectedResult']];
+    });
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -39,5 +46,13 @@ describe('FacilitiesUtilitiesController (e2e)', () => {
         });
     });
 
+    it.each(facilityUtilitiesTestData)('Should return same results as Facility Utilities Test Data', (facilityCode, expectedResult) => {
+      return request(app.getHttpServer())
+        .get(`/facilities/${facilityCode}/utilities`)
+        .expect(200)
+        .expect((response) => {
+          _.isEqual(expectedResult, response.body);
+        });
+    });
   });
 });

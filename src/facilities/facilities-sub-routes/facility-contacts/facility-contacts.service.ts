@@ -17,6 +17,7 @@ export class FacilityContactsService {
         return await this.facilityContactCreateService.createFacilityContactDetails(facility_code, facilityContact);
     }
 
+    
     // TODO: Create a helper to handle the old MOH Codes.
     async getFacilityContactDetails(facility_code: string): Promise<FacilityContactDto> {
         const facility = await this.facilityRepository.findOne
@@ -24,6 +25,7 @@ export class FacilityContactsService {
         if (facility.location === null) {
              throw new HttpException('Contact Details Do Not Yet Exist on this Facility, Please create', HttpStatus.NOT_FOUND)
             }
+        
         return {
             contactDetails: {
                 catchmentArea: facility.location.catchment_area ? facility.location.catchment_area : null,

@@ -37,8 +37,7 @@ describe('FacilitiesController (e2e)', () => {
         registrationNumber: 'cc/09/90P',
         codeMap: [],
       })
-      .expect(201)
-      .catch((error) => console.log(error));
+      .expect(201);
     });
   });
   describe('facilities /GET', () => {
@@ -60,7 +59,7 @@ describe('FacilitiesController (e2e)', () => {
         .expect((res) => {
             for (const facility of res.body) {
                 const errorMessage = Joi.validate(facility, facilitiesGet.default).error;
-                // if(errorMessage){ console.log(errorMessage); }
+                if(errorMessage){ console.log(errorMessage); }
                 expect(errorMessage).toBeNull();
             }
 

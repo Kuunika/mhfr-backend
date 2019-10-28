@@ -8,10 +8,12 @@ import { Utility_Type } from '../../../common/entities/utility_types.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { FacilitiesSummaryHelper } from '../../facilities-summary-helper';
 import { FacilityValidatorServiceService } from '../../facility-validator-service.service';
+import { JoiDtoValidatorHelper} from '../../../common/helpers/joi-dto-validator-helper';
+import { DtoIdsValidatorHelper } from '../../../common/helpers/dto-ids-validator-helper';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Facilities, Utilities, Utility_Type, Facility_Utilities])],
-  providers: [FacilitiesUtilitiesService, FacilitiesSummaryHelper, FacilityValidatorServiceService],
+  providers: [FacilitiesUtilitiesService, FacilitiesSummaryHelper, FacilityValidatorServiceService, JoiDtoValidatorHelper, DtoIdsValidatorHelper],
   controllers: [FacilitiesUtilitiesController]
 })
 export class FacilitiesUtilitiesModule {}

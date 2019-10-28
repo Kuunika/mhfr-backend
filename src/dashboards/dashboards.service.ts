@@ -8,7 +8,7 @@ import { DashboardView } from '../common/entities/dashboard.view.entity';
 @Injectable()
 export class DashboardsService {
     constructor(@InjectRepository(Facilities) private readonly facilitiesRepository: Repository<Facilities>,
-                @InjectRepository(DashboardView) private readonly dashboardViewRepository: Repository<DashboardView>) {}
+                @InjectRepository(DashboardView) private readonly dashboardViewRepository: Repository<DashboardView>) { }
 
     async getDashboardReport(districtCodes?: string[]): Promise<DashboardDto> {
         const dashboardView = await this.dashboardViewRepository.find();
@@ -21,7 +21,7 @@ export class DashboardsService {
 
     private validateDistrictCodes(districtCodes: string[]): string[] {
         const validDistrictCodes = ['MC', 'DA', 'DE', 'LL', 'KB', 'CP', 'KU', 'NT', 'SA', 'NK', 'KC', 'NT', 'MU',
-        'RU', 'KA', 'MZ', 'BK', 'LK', 'MC', 'MG', 'MU', 'PH', 'ZA', 'BT', 'QE', 'CR', 'CK', 'MW', 'NE', 'NS', 'TH'];
+            'RU', 'KA', 'MZ', 'BK', 'LK', 'MC', 'MG', 'MU', 'PH', 'ZA', 'BT', 'QE', 'CR', 'CK', 'MW', 'NE', 'NS', 'TH'];
         return districtCodes ? districtCodes.map((code) => code.toUpperCase()).filter((code) => validDistrictCodes.includes(code)) : [];
     }
 
@@ -29,53 +29,63 @@ export class DashboardsService {
         return this.createDashboardDto(dashboardView.filter((facility) => districtCodes.includes(facility.district_code)));
     }
 
-    // TODO: Need to Refactor
     private createDashboardDto(dashboardView: DashboardView[]): DashboardDto {
-        const districtHospitals: number = dashboardView
-                                            .map((facility): number => Number(facility.district_hospital))
-                                            .reduce((total, current) => total += current);
 
-        const healthCenters: number = dashboardView
-                                            .map((facility): number => Number(facility.health_centre))
-                                            .reduce((total, current) => total += current);
+        const dashboardViewTotals = this.calculateDashboardViewTotals(dashboardView, [
+            'district_hospital',
+            'health_centre',
+            'dispensary',
+            'health_post',
+            'registered',
+            'pending',
+            'not_registered',
+            'functional',
+            'closed_temporary',
+            'closed',
+        ]);
 
-        const dispensaries: number  = dashboardView
-                                            .map((facility): number => Number(facility.dispensary))
-                                            .reduce((total, current) => total += current);
+        const mappings = this.mappingDashboardViewNames(dashboardViewTotals);
 
-        const healthPosts: number   = dashboardView
-                                            .map((facility): number => Number(facility.health_post))
-                                            .reduce((total, current) => total += current);
+        return this.createDashboardDtoFromMappings(mappings);
+    }
 
-        const registered: number = dashboardView
-                                            .map((facility): number => Number(facility.registered))
-                                            .reduce((total, current) => total += current);
+    private calculateDashboardViewTotals(dashboardViews: DashboardView[], dashboardViewKeys: string[]) {
+       const dashBoardViewTotals = {};
+       dashboardViewKeys.forEach(key => {
+            dashBoardViewTotals[key] = dashboardViews.reduce((accumulator, dashboardView): number => Number(dashboardView[key]) + accumulator, 0);
+       });
+       return dashBoardViewTotals;
+    }
 
-        const pending: number = dashboardView
-                                            .map((facility): number => Number(facility.pending))
-                                            .reduce((total, current) => total += current);
+    private mappingDashboardViewNames(dashboardViewTotals): DashboardMappings {
 
-        const notRegistered: number = dashboardView
-                                            .map((facility): number => Number(facility.not_registered))
-                                            .reduce((total, current) => total += current);
+        const dashboardPayload = {
+            districtHospitals: dashboardViewTotals.district_hospital,
+            healthCenters: dashboardViewTotals.health_centre,
+            dispensaries: dashboardViewTotals.dispensary,
+            healthPosts: dashboardViewTotals.health_post,
+            registered: dashboardViewTotals.registered,
+            pending: dashboardViewTotals.pending,
+            notRegistered: dashboardViewTotals.not_registered,
+            functional: dashboardViewTotals.functional,
+            closedTemp: dashboardViewTotals.closed_temporary,
+            closed: dashboardViewTotals.closed,
+            totalFacilities: null,
+        };
 
-        const functional: number = dashboardView
-                                            .map((facility): number => Number(facility.functional))
-                                            .reduce((total, current) => total += current);
+        dashboardPayload.totalFacilities = dashboardPayload.dispensaries + dashboardPayload.healthPosts
+                                        + dashboardPayload.districtHospitals + dashboardPayload.healthCenters;
+        return dashboardPayload;
 
-        const closedTemp: number = dashboardView
-                                            .map((facility): number => Number(facility.closed_temporary))
-                                            .reduce((total, current) => total += current);
+    }
 
-        const closed: number = dashboardView
-                                            .map((facility): number => Number(facility.closed))
-                                            .reduce((total, current) => total += current);
+    private createDashboardDtoFromMappings(mappedDashboardViewNames: DashboardMappings): DashboardDto {
 
-        const totalFacilities: number = dispensaries + healthPosts + districtHospitals + healthCenters;
-
+        const {districtHospitals, healthCenters, dispensaries, healthPosts,
+            registered, pending, notRegistered, functional, closedTemp,
+            closed, totalFacilities} = mappedDashboardViewNames;
 
         return {
-            totalFacilities,
             districtHospitals,
             healthCenters,
             dispensaries,
@@ -90,6 +100,21 @@ export class DashboardsService {
                 closedTemp,
                 closed,
             },
+            totalFacilities,
         };
     }
+}
+
+interface DashboardMappings {
+    districtHospitals: number;
+    healthCenters: number;
+    dispensaries: number;
+    healthPosts: number;
+    registered: number;
+    pending: number;
+    notRegistered: number;
+    functional: number;
+    closedTemp: number;
+    closed: number;
+    totalFacilities: number;
 }

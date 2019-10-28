@@ -1,4 +1,3 @@
-
 import {HttpException, HttpStatus } from '@nestjs/common';
 
 export class FacilityNotFoundException extends HttpException {
